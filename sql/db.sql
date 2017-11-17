@@ -1,11 +1,11 @@
 CREATE TABLE user_group (
-	id INT,
+	id INT AUTO_INCREMENT,
 	name VARCHAR(255),
 	PRIMARY KEY(id)
 );
 
 CREATE TABLE users(
-	id BIGINT(20),
+	id BIGINT(20) AUTO_INCREMENT,
 	username VARCHAR(255),
 	email VARCHAR(255) UNIQUE,
 	password VARCHAR(245),
