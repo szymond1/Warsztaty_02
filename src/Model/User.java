@@ -25,7 +25,7 @@ public class User {
 		this.email = email;
 		this.setPassword(password);
 		this.userGroupId = 0;
-	}
+	} 
 
 	public User(String username, String email, String password) {
 		super();
@@ -141,11 +141,11 @@ public class User {
 		return allUserList;
 	}
 
-	public void deleteUser(Connection conn, long id) throws SQLException {
+	public void deleteUser(Connection conn) throws SQLException {
 		if (this.id != 0) {
 			String sql = "DELETE FROM users WHERE id= ?";
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setLong(1, this.id);
+			ps.setLong(1, id);
 			ps.executeUpdate();
 			this.id = 0;
 		}
