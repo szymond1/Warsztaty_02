@@ -55,7 +55,7 @@ public class Group {
 			ps1.setString(1, this.name);
 			ps1.setInt(2, this.id);
 			ps1.executeUpdate();
-			ps1.close();
+			ps1.close(); 
 		}
 	}
 	
