@@ -29,6 +29,16 @@ public class Solution {
 
 	}
 
+	public Solution(Date created, Date updated, String description) {
+		this.id = 0;
+		this.created = created;
+		this.updated = updated;
+		this.description = description;
+		this.exercises_id = exercises_id;
+		this.users_id = users_id;
+	}
+	
+	
 	public Solution(String description, int exercises_id, long users_id) {
 		this.id = 0;
 		this.created = created;
@@ -84,13 +94,14 @@ public class Solution {
 
 	public void save(Connection conn) throws SQLException {
 		if (this.id == 0) {
-			String sql = "INSERT INTO solutions(created, updated, description, excercises_id, users_id) VALUES (NOW(), NOW(), ?, ?, ?);";
+			String sql = "INSERT INTO solutions(created, updated, description, excercises_id, users_id) VALUES (NOW(), ?, ?, ?, ?);";
 
 			String[] generatedColumns = { "ID" }; // kolumna jest AUTOINCREMENT, wiec tworzymy tabele, która generuje ID
 			PreparedStatement ps = conn.prepareStatement(sql, generatedColumns);
-			ps.setString(1, this.description);
-			ps.setInt(2, this.exercises_id);
-			ps.setLong(3, this.users_id);
+			ps.setDate(1, null);
+			ps.setString(2, this.description);
+			ps.setInt(3, this.exercises_id);
+			ps.setLong(4, this.users_id);
 			ps.executeUpdate();
 			ResultSet rs = ps.getGeneratedKeys(); // baza zwraca wynik
 			if (rs.next()) {
@@ -179,5 +190,18 @@ public class Solution {
 		}
 
 	}
+	
+	public static boolean checkIfExists(Connection conn, int exercises_id, long users_id) throws SQLException {
+		String sql = "SELECT * FROM solutions WHERE excercises_id=? AND users_id=? ORDER BY updated DESC;";
+		PreparedStatement ps = conn.prepareStatement(sql);
+		ps.setInt(1, exercises_id);
+		ps.setLong(2, users_id);
+		ResultSet rs = ps.executeQuery();
+		if(rs.next()) {
+			return true;
+		} else {
+			return false;
+		}
+}
 
 }

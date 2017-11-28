@@ -123,7 +123,7 @@ public class User {
 		}
 		return null;
 	}
-
+ 
 	public static List<User> loadAllUser(Connection conn) throws SQLException {
 		String sql = "SELECT * FROM users";
 		List<User> allUserList = new ArrayList<>();
@@ -170,6 +170,25 @@ public class User {
 		}
 		
 	}
+	
+	public static void loadNotDoneById(Connection conn, long id) throws SQLException {
+		List<String> exercises = new ArrayList<>();
+		String sql = "SELECT * FROM excercises WHERE id NOT IN (SELECT excercises_id FROM solutions WHERE users_id=?);";
+		PreparedStatement ps = conn.prepareStatement(sql);
+		ps.setLong(1, id);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			long exId = rs.getLong("id");
+			String title = rs.getString("title");
+			String desc = rs.getString("description");
+			exercises.add(exId + ") " + title + ": " + desc);
+		}
+		ps.close();
+		rs.close();
+		for (String s : exercises) {
+			System.out.println(s);
+		}
+}
 	
 	
 }
