@@ -33,7 +33,7 @@ public class User {
 		this.username = username;
 		this.email = email;
 		setPassword(password);
-		this.userGroupId = 0;
+		this.userGroupId = 0; 
 	}
 
 	public String getUsername() {
@@ -151,4 +151,25 @@ public class User {
 		}
 	}
 
+	public static void loadAllByGrupId (Connection conn, int userGroupId) throws SQLException {
+		String sql = " SELECT id, username FROM users WHERE user_group_id = ?;";
+		List<User> listOfGroups = new ArrayList<>();
+		PreparedStatement ps = conn.prepareStatement(sql);
+		ps.setInt(1, userGroupId);
+		ResultSet rs = ps.executeQuery();
+		System.out.println("Wszyscy czlonkowie grupy o id " + userGroupId);
+		while (rs.next()) {
+			User u = new User();
+			u.id = rs.getInt("id");
+			u.username = rs.getString("username");
+			listOfGroups.add(u);
+		}
+
+		for (User u : listOfGroups) {
+			System.out.println(u.id + " | " + u.username + " |");
+		}
+		
+	}
+	
+	
 }

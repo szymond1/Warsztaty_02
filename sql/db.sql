@@ -33,3 +33,5 @@ CREATE TABLE solutions (
 	FOREIGN KEY(excercises_id) REFERENCES excercises(id),
 	FOREIGN KEY(users_id) REFERENCES users(id),
 	);
+	
+	SELECT solutions.id, solutions.users_id, users.username,users.email FROM solutions  LEFT JOIN users ON users.id = solutions.users_id;

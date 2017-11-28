@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import Model.Group;
-import Model.User;
 
 public class GroupsApp {
 	

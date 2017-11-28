@@ -7,19 +7,19 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Excercise {
+public class Exercise {
 
-	private int id=0;
+	private int id = 0;
 	private String title;
 	private String description;
 
-	public Excercise() {
+	public Exercise() {
 		this.id = 0;
 		this.title = title;
 		this.description = description;
 	}
 
-	public Excercise(String title, String description) {
+	public Exercise(String title, String description) {
 		this.id = 0;
 		this.title = title;
 		this.description = description;
@@ -72,13 +72,13 @@ public class Excercise {
 		}
 	}
 
-	public static Excercise loadExcerciseById(Connection conn, int id) throws SQLException {
+	public static Exercise loadExerciseById(Connection conn, int id) throws SQLException {
 		String sql = "SELECT * FROM excercises WHERE id = ?";
 		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setInt(1, id);
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
-			Excercise loadedExcercise = new Excercise();
+			Exercise loadedExcercise = new Exercise();
 			loadedExcercise.id = rs.getInt("id");
 			loadedExcercise.title = rs.getString("title");
 			loadedExcercise.description = rs.getString("description");
@@ -88,13 +88,13 @@ public class Excercise {
 		return null;
 	}
 
-	public static List<Excercise> loadAllExcercise(Connection conn) throws SQLException {
+	public static List<Exercise> loadAllExcercise(Connection conn) throws SQLException {
 		String sql = "SELECT * FROM excercises";
-		List<Excercise> allExcerciseList = new ArrayList<>();
+		List<Exercise> allExcerciseList = new ArrayList<>();
 		PreparedStatement ps = conn.prepareStatement(sql);
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
-			Excercise loadExcercise = new Excercise();
+			Exercise loadExcercise = new Exercise();
 			loadExcercise.id = rs.getInt("id");
 			loadExcercise.title = rs.getString("title");
 			loadExcercise.description = rs.getString("description");
@@ -104,7 +104,7 @@ public class Excercise {
 		return allExcerciseList;
 	}
 
-	public void deleteExcercise(Connection conn) throws SQLException {
+	public void deleteExercise(Connection conn) throws SQLException {
 		if (this.id != 0) {
 			String sql = "DELETE FROM excercises WHERE id= ?";
 			PreparedStatement ps = conn.prepareStatement(sql);
@@ -112,6 +112,28 @@ public class Excercise {
 			ps.executeUpdate();
 			this.id = 0;
 		}
+	}
+
+	public static void loadAllByUserId(Connection conn, int id) throws SQLException {
+		ArrayList<String> solutions = new ArrayList<String>();
+		String sql = "SELECT excercises.id, solutions.description FROM excercises JOIN solutions ON excercises.id = solutions.excercises_id "
+				+ "WHERE solutions.users_id=?;";
+		PreparedStatement ps = conn.prepareStatement(sql);
+		ps.setInt(1, id);
+		ResultSet rs = ps.executeQuery();
+		System.out.println("Opisy zadan przekazane przez użytkownika " + id);
+		while (rs.next()) {
+			int exerciseId = rs.getInt("excercises.id");
+			String solutionDesc = rs.getString("solutions.description");
+			solutions.add("zadanie " + exerciseId + ". " + solutionDesc);
+		}
+		ps.close();
+		rs.close();
+
+		for (String s : solutions) {
+			System.out.println(s);
+		}
+
 	}
 
 }

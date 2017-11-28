@@ -8,31 +8,33 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.sun.media.sound.SoftLowFrequencyOscillator;
+
 public class Solution {
 
 	private int id;
 	private Date created;
 	private Date updated;
 	private String description;
-	private int excercises_id;
+	private int exercises_id;
 	private long users_id;
-	
+
 	public Solution() {
-		this.id =0;
+		this.id = 0;
 		this.created = created;
 		this.updated = updated;
 		this.description = description;
-		this.excercises_id = excercises_id;
-		this.users_id =users_id;
+		this.exercises_id = exercises_id;
+		this.users_id = users_id;
 
 	}
-	
-	public Solution(String description, int excercises_id, long users_id) {
-		this.id =0;
+
+	public Solution(String description, int exercises_id, long users_id) {
+		this.id = 0;
 		this.created = created;
 		this.updated = updated;
 		this.description = description;
-		this.excercises_id =excercises_id;
+		this.exercises_id = exercises_id;
 		this.users_id = users_id;
 	}
 
@@ -53,7 +55,7 @@ public class Solution {
 	}
 
 	public int getExcercise_id() {
-		return excercises_id;
+		return exercises_id;
 	}
 
 	public long getUsers_id() {
@@ -72,14 +74,14 @@ public class Solution {
 		this.description = description;
 	}
 
-	public void setExcercise_id(int excercise_id) {
-		this.excercises_id = excercise_id;
+	public void setExcercise_id(int exercise_id) {
+		this.exercises_id = exercise_id;
 	}
 
 	public void setUsers_id(long users_id) {
 		this.users_id = users_id;
 	}
-	
+
 	public void save(Connection conn) throws SQLException {
 		if (this.id == 0) {
 			String sql = "INSERT INTO solutions(created, updated, description, excercises_id, users_id) VALUES (NOW(), NOW(), ?, ?, ?);";
@@ -87,7 +89,7 @@ public class Solution {
 			String[] generatedColumns = { "ID" }; // kolumna jest AUTOINCREMENT, wiec tworzymy tabele, która generuje ID
 			PreparedStatement ps = conn.prepareStatement(sql, generatedColumns);
 			ps.setString(1, this.description);
-			ps.setInt(2, this.excercises_id);
+			ps.setInt(2, this.exercises_id);
 			ps.setLong(3, this.users_id);
 			ps.executeUpdate();
 			ResultSet rs = ps.getGeneratedKeys(); // baza zwraca wynik
@@ -98,10 +100,11 @@ public class Solution {
 			rs.close();
 
 		} else {
-			String sql = "UPDATE solutions SET updated=NOW(), description=?, excercise_id=?, users_id=? " + "WHERE id=?;";
+			String sql = "UPDATE solutions SET updated=NOW(), description=?, excercise_id=?, users_id=? "
+					+ "WHERE id=?;";
 			PreparedStatement ps1 = conn.prepareStatement(sql);
 			ps1.setString(1, this.description);
-			ps1.setInt(2, this.excercises_id);
+			ps1.setInt(2, this.exercises_id);
 			ps1.setLong(3, this.users_id);
 			ps1.setInt(4, this.id);
 			ps1.executeUpdate();
@@ -120,7 +123,7 @@ public class Solution {
 			loadedSolution.created = rs.getDate("created");
 			loadedSolution.updated = rs.getDate("updated");
 			loadedSolution.description = rs.getString("description");
-			loadedSolution.excercises_id = rs.getInt("excercises_id");
+			loadedSolution.exercises_id = rs.getInt("excercises_id");
 			loadedSolution.users_id = rs.getInt("users_id");
 			return loadedSolution;
 		}
@@ -138,7 +141,7 @@ public class Solution {
 			loadSolution.created = rs.getDate("created");
 			loadSolution.updated = rs.getDate("updated");
 			loadSolution.description = rs.getString("description");
-			loadSolution.excercises_id = rs.getInt("excercises_id");
+			loadSolution.exercises_id = rs.getInt("excercises_id");
 			loadSolution.users_id = rs.getInt("users_id");
 			allSolutionList.add(loadSolution);
 		}
@@ -154,8 +157,27 @@ public class Solution {
 			this.id = 0;
 		}
 	}
-	
-	
-	
-	
+
+	public static void loadAllByExerciseId(Connection conn, int id) throws SQLException {
+
+		String sql = "SELECT id, created, description FROM solutions WHERE excercises_id = ? ORDER BY created DESC;";
+		List<Solution> listOfSolutions = new ArrayList<>();
+		PreparedStatement ps = conn.prepareStatement(sql);
+		ps.setInt(1, id);
+		ResultSet rs = ps.executeQuery();
+		System.out.println("Wszystkie rozwiazania zadania o id " + id + " od najnowszego do najstarszego");
+		while (rs.next()) {
+			Solution solOfEx = new Solution();
+			solOfEx.id = rs.getInt("id");
+			solOfEx.created = rs.getDate("created");
+			solOfEx.description = rs.getString("description");
+			listOfSolutions.add(solOfEx);
+		}
+
+		for (Solution s : listOfSolutions) {
+			System.out.println(s.id + " | " + s.created + " | " + s.description);
+		}
+
+	}
+
 }
