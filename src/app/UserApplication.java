@@ -39,12 +39,12 @@ public class UserApplication {
 
 				switch (decision) {
 				case "add":
-
-					// lista zadan ktorych uzytkownik jeszcze nie wykonal
+					
+					System.out.println("Lista zadan, których jeszcze nie wykonałeś:");
 					User.loadNotDoneById(conn, userId);
 					
 					//edycja
-					System.out.println("Podaj id zadania, do którego chcesz dodać rozwiązanie");
+					System.out.println("\n Podaj id zadania, do którego chcesz dodać rozwiązanie");
 					int exerciseId = scan.nextInt();
 					System.out.println("Podaj rozwiązanie zadania");
 					String description = scan.next();
